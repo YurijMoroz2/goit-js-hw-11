@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <!-- <link rel="stylesheet" href="dist/notiflix-3.2.6.min.css" /> -->
+        <title>Homework 11</title>
+  </head>
+  <body>
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button type="submit">Search</button>
+    </form>
+    <div class="gallery">
+      <!-- Картки зображень -->
+      <ul class="gallery-list">
+      </ul>
+    </div>
+    <button type="button" class="load-more">Load more</button>
+    <script src="index.js" type="module"></script>
+  </body>
+</html>

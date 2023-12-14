@@ -16,18 +16,6 @@ const searchForm = document.querySelector('#search-form');
 // -------------------------------------------------------------------------
 let page = 1;
 let per_page = 40;
-// ------------------------------------------
-galleryBox.addEventListener('click', handelClickGallery);
-let gallery;
-function handelClickGallery(event) {
-  event.preventDefault();
-
-  gallery = new SimpleLightbox('.gallery a', {
-    spinner: 'true',
-    captionsData: 'alt',
-    enableKeyboard: 'folse',
-  });
-}
 // --------------------------Input-------------------------------------------------
 input.addEventListener('input', handleInput);
 function handleInput(event) {
@@ -147,6 +135,12 @@ async function onLoadMore(event) {
     per_page += 40;
     // console.log('loadMore', data);
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
+    gallery = new SimpleLightbox('.gallery a', {
+        spinner: 'true',
+        captionsData: 'alt',
+        enableKeyboard: 'true',
+      });
+      gallery.refresh();
     // console.log('page1', page);
     // console.log('per_page onLoadMore', per_page);
 
@@ -157,7 +151,6 @@ async function onLoadMore(event) {
       behavior: 'smooth',
     });
 
-    gallery.refresh();
 
     if (per_page >= data.totalHits) {
       // console.log("data.totalHits",data.totalHits);
@@ -178,6 +171,11 @@ async function render() {
     const data = await serviceTodos();
     // console.log('render', data);
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
+    gallery = new SimpleLightbox('.gallery a', {
+        spinner: 'true',
+        captionsData: 'alt',
+        enableKeyboard: 'true',
+    });
     gallery.refresh();
     return await data;
   } catch (error) {

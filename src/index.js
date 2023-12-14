@@ -135,6 +135,12 @@ async function onLoadMore(event) {
     per_page += 40;
     // console.log('loadMore', data);
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
+    const { height: cardHeight } =
+      container.firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
     gallery = new SimpleLightbox('.gallery a', {
         spinner: 'true',
         captionsData: 'alt',
@@ -144,12 +150,6 @@ async function onLoadMore(event) {
     // console.log('page1', page);
     // console.log('per_page onLoadMore', per_page);
 
-    const { height: cardHeight } =
-      container.firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
 
 
     if (per_page >= data.totalHits) {

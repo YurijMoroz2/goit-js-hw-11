@@ -21,11 +21,9 @@
     --animation-duration: 250ms;
   }
   
-  .gallery {
-  }
-  .gallery-list{
+   .gallery-list{
     display: grid;
-    max-width: 1140px;
+    /* max-width: 1140px; */
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     /* grid-auto-rows: 240px; */
     grid-gap: 12px;
@@ -69,7 +67,9 @@
   cursor: zoom-in;
   }
   .load-more{
-    width: 100px;
-    background-color: blue;
+    width: 150px;
+    color: white;
+    background-color:darkcyan;
     margin: auto;
+
   }

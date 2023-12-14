@@ -9,41 +9,40 @@ const form = document.querySelector('.search-form');
 const input = document.querySelector('input');
 const btn = document.querySelector('button');
 const container = document.querySelector('.gallery-list');
-const galleryBox = document.querySelector('.gallery')
-// -------------------------------------------------------------------------
-let page = 1;
-let per_page = 40;
+const galleryBox = document.querySelector('.gallery');
 const loadMore = document.querySelector('.load-more');
 const inputElement = document.querySelector('input[name="searchQuery"]');
 const searchForm = document.querySelector('#search-form');
+// -------------------------------------------------------------------------
+let page = 1;
+let per_page = 40;
 // ------------------------------------------
 galleryBox.addEventListener('click', handelClickGallery);
-let gallery
+let gallery;
 function handelClickGallery(event) {
   event.preventDefault();
-  //  -----------------------------------------------------------
-   gallery = new SimpleLightbox('.gallery a',{
-      spinner:'true',
-      captionsData:'alt',
-      enableKeyboard:	'true',
-    });
-    gallery.refresh();
+
+  gallery = new SimpleLightbox('.gallery a', {
+    spinner: 'true',
+    captionsData: 'alt',
+    enableKeyboard: 'folse',
+  });
 }
-// ---------------------------------------------------------------------------
+// --------------------------Input-------------------------------------------------
 input.addEventListener('input', handleInput);
 function handleInput(event) {
-    resetPage()
-    btn.disabled = false
-      // console.log(event.currentTarget.value);
+  resetPage();
+  btn.disabled = false;
+  // console.log(event.currentTarget.value);
   // console.log(inputElement.value);
   if (!inputElement.value.ok) {
     event.preventDefault();
     container.innerHTML = '';
     loadMore.style.display = 'none';
-      }
-    }
-    // -----------------------------------------------
-    function createMarcup(arr) {
+  }
+}
+// ----------------------------------------------------------------------------------
+function createMarcup(arr) {
   return arr
     .map(
       ({
@@ -81,28 +80,28 @@ function handleInput(event) {
     )
     .join('');
 }
-// -----------------------------------------------
+// -------------------Submit----------------------------
 let object;
 form.addEventListener('submit', handleSubmit);
 
 function handleSubmit(event) {
-    event.preventDefault();
-    container.style.listStyle = 'none';
+  event.preventDefault();
+  container.style.listStyle = 'none';
   const searchQuery = inputElement.value;
   // console.log("searchQuery",searchQuery.length);
-  
+
   const postData = new FormData(form);
   const obj = Object.fromEntries(postData.entries());
   // console.log(obj);
   object = obj.searchQuery;
 
   serviceTodos()
-  .then(value => {
+    .then(value => {
       // console.log(value)
       if (value.hits.length !== 0) {
         value.totalHits < per_page
-        ? (loadMore.style.display = 'none')
-        : (loadMore.style.display = 'block');
+          ? (loadMore.style.display = 'none')
+          : (loadMore.style.display = 'block');
         Notiflix.Notify.success(`Hooray! We found ${value.totalHits} images.`);
       } else {
         loadMore.style.display = 'none';
@@ -114,136 +113,88 @@ function handleSubmit(event) {
     .catch(error => {
       console.log(error);
     });
-  render()
-  .then(ren => {
+  render().then(ren => {
     //   console.log(ren);
-      btn.disabled = true
-        //    gallery.refresh();
-    
-    })
+    btn.disabled = true;
+  });
 }
-// ------------------1111111111111111111111111111
+// -------------------------------GetURL-----------------------------------
 async function serviceTodos(page = 1) {
-    const qweryParams = new URLSearchParams({
-        key: API_KEY,
+  const qweryParams = new URLSearchParams({
+    key: API_KEY,
     q: `${object}`,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
     page: page,
     per_page: per_page,
-});
+  });
   try {
     const response = await axios(`${BASE_URL}?${qweryParams}`);
-        return await response.data;
-     } 
-     catch (error) {
-         console.log('Error!!!!', error);
-        }
-    }
-// -----------------------1111111111111111111111111111111111111111111111
+    return await response.data;
+  } catch (error) {
+    console.log('Error!!!!', error);
+  }
+}
+// --------------------------------LoadMore--------------------------------------------------------------
 
 loadMore.addEventListener('click', onLoadMore);
 async function onLoadMore(event) {
   try {
     event.preventDefault();
     page += 1;
-    per_page += 40;
     const data = await serviceTodos(page);
-    // console.log("loadMore",data);
+    per_page += 40;
+    // console.log('loadMore', data);
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
     // console.log('page1', page);
     // console.log('per_page onLoadMore', per_page);
-    
-    if (per_page > data.totalHits) {
+
+    const { height: cardHeight } =
+      container.firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+
+    gallery.refresh();
+
+    if (per_page >= data.totalHits) {
       // console.log("data.totalHits",data.totalHits);
       Notiflix.Report.info(
-          'Info',
-          "We're sorry, but you've reached the end of search results."
+        'Info',
+        "We're sorry, but you've reached the end of search results."
       );
       loadMore.style.display = 'none';
     }
-    gallery.refresh();
-} catch (error) {
-    console.log(error.message);
+    throw new Error(error);
+  } catch (error) {
+    console.log('Error__LoadMore', error.message);
   }
 }
-// -----------------------------
+// -----------------------Render----------------------------------------------------------
 async function render() {
-    try {
-        const data = await serviceTodos();
-        // console.log('render', data);
-        container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
-        return await data
-    } catch (error) {
-        console.log(error.message);
-    }
+  try {
+    const data = await serviceTodos();
+    // console.log('render', data);
+    container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
     gallery.refresh();
+    return await data;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 // ------------------------------------------
 
 function resetPage() {
-    page = 1; 
-    per_page = 40;
-    // console.log(page,per_page);
+  page = 1;
+  per_page = 40;
+  // console.log(page,per_page);
+}
+//   -----------------------натисни 1-------------------------------------------
+document.addEventListener('keydown', function (event) {
+  if (event.key === '1') {
+    window.scrollTo(0, 0);
   }
-// render()
-
-// key - твій унікальний ключ доступу до API.
-// q - термін для пошуку. Те, що буде вводити користувач.
-// image_type - тип зображення. На потрібні тільки фотографії, тому постав значення photo.
-// orientation - орієнтація фотографії. Постав значення horizontal.
-// safesearch - фільтр за віком. Постав значення true.
-//
-// ------------------infinity Scroll--------------------------------
-// async function infinity(){
-//     try {
-//         page +=1;
-//         const data = await serviceTodos(page)
-//         console.log("render1",data);
-//         container.insertAdjacentHTML("beforeend", createMarcup(data.hits));
-//         if(data.page<data.total){
-//             console.log("page1",data.hits.page);
-//             loadMore.classList.replace("load-more-hidden","load-more")
-//             if(data.page > data.total){
-//                 observer.observe(quard)
-//                 handlePagination()
-//             }
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-//     }
-// const observer = new IntersectionObserver(handlePagination,options);
-// const options = {
-//     root:null,
-//     rootMargin:"100px",
-//     threshold: 0
-// }
-// 111111111111111111111111111111111111111111111111111111111
-// function handlePagination(entries,observer){
-//     entries.forEach((entry) =>{
-//         console.log(entry)
-//         if(entry.jdsahd){
-//             page+=1;
-//             async function infinity1(){
-//                 try {
-//                     page +=1;
-//                     const data = await serviceTodos(page)
-//                     console.log("render1",data);
-//                     container.insertAdjacentHTML("beforeend", createMarcup(data.hits));
-//                     if(data.page<data.total){
-//                         console.log("page1",data.hits.page);
-//                         loadMore.classList.replace("load-more-hidden","load-more")
-//                         if(data.page > data.total){
-//                             observer.unobserve(entry.target)
-//                                                     }
-//                     }
-//                 } catch (error) {
-//                     console.log(error.message);
-//                 }
-//                 }
-//         };
-//     })
-// }
+});

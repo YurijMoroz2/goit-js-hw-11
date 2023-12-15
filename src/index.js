@@ -84,6 +84,7 @@ function handleSubmit(event) {
   object = obj.searchQuery;
 
   serviceTodos()
+  // console.log(serviceTodos())
     .then(value => {
       // console.log(value)
       if (value.hits.length !== 0) {
@@ -102,7 +103,7 @@ function handleSubmit(event) {
       console.log(error);
     });
   render().then(ren => {
-    //   console.log(ren);
+      // console.log(ren);
     btn.disabled = true;
   });
 }
@@ -132,8 +133,7 @@ async function onLoadMore(event) {
     event.preventDefault();
     page += 1;
     const data = await serviceTodos(page);
-    per_page += 40;
-    // console.log('loadMore', data);
+        // console.log('loadMore', data);
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
     const { height: cardHeight } =
       container.firstElementChild.getBoundingClientRect();
@@ -150,9 +150,7 @@ async function onLoadMore(event) {
     // console.log('page1', page);
     // console.log('per_page onLoadMore', per_page);
 
-
-
-    if (per_page >= data.totalHits) {
+    if ((page * per_page)>= data.totalHits) {
       // console.log("data.totalHits",data.totalHits);
       Notiflix.Report.info(
         'Info',

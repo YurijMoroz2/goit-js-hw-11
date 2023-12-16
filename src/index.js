@@ -158,9 +158,9 @@ async function onLoadMore(event) {
       );
       loadMore.style.display = 'none';
     }
-    // throw new Error(error);
+    
   } catch (error) {
-    console.log('Error__LoadMore', error.message);
+    console.log('Error_LoadMore!!!', error.message);
   }
 }
 // -----------------------Render----------------------------------------------------------

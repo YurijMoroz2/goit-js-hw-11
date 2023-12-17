@@ -8,14 +8,15 @@ const BASE_URL = 'https://pixabay.com/api/';
 const form = document.querySelector('.search-form');
 const input = document.querySelector('input');
 const btn = document.querySelector('button');
-const container = document.querySelector('.gallery-list');
 const galleryBox = document.querySelector('.gallery');
+const container = document.querySelector('.gallery-list');
 const loadMore = document.querySelector('.load-more');
 const inputElement = document.querySelector('input[name="searchQuery"]');
 const searchForm = document.querySelector('#search-form');
 // -------------------------------------------------------------------------
 let page = 1;
 let per_page = 40;
+let gallery
 // --------------------------Input-------------------------------------------------
 input.addEventListener('input', handleInput);
 function handleInput(event) {

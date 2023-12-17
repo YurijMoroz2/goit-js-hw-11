@@ -134,7 +134,15 @@ async function onLoadMore(event) {
     event.preventDefault();
     page += 1;
     const data = await serviceTodos(page);
-        // console.log('loadMore', data);
+    // console.log('loadMore', data);
+    if ((page * per_page)>= data.totalHits) {
+      // console.log("data.totalHits",data.totalHits);
+      Notiflix.Report.info(
+        'Info',
+        "We're sorry, but you've reached the end of search results."
+      );
+      loadMore.style.display = 'none';
+  }
     container.insertAdjacentHTML('beforeend', createMarcup(data.hits));
     const { height: cardHeight } =
       container.firstElementChild.getBoundingClientRect();
@@ -151,14 +159,6 @@ async function onLoadMore(event) {
     // console.log('page1', page);
     // console.log('per_page onLoadMore', per_page);
 
-    if ((page * per_page)>= data.totalHits) {
-      // console.log("data.totalHits",data.totalHits);
-      Notiflix.Report.info(
-        'Info',
-        "We're sorry, but you've reached the end of search results."
-      );
-      loadMore.style.display = 'none';
-    }
     
   } catch (error) {
     console.log('Error_LoadMore!!!', error.message);
